@@ -27,6 +27,7 @@
 #include "../components/gnuboy/regs.h"
 #include "../components/gnuboy/rtc.h"
 #include "../components/gnuboy/gnuboy.h"
+#include "../components/gnuboy/dmgpal.h"
 
 #include <string.h>
 
@@ -652,6 +653,12 @@ void app_main(void)
         {
             scaling_enabled = !scaling_enabled;
             odroid_settings_ScaleDisabled_set(ODROID_SCALE_DISABLE_GB, scaling_enabled ? 0 : 1);
+        }
+
+        // DMG color palette cycling
+        if (!hw.cgb && dmgcolor && joystick.values[ODROID_INPUT_START] && !lastJoysticState.values[ODROID_INPUT_LEFT] && joystick.values[ODROID_INPUT_LEFT])
+        {
+            dmg_pal_cycle();
         }
 
 
