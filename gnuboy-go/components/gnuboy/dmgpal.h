@@ -1,9 +1,11 @@
 #ifndef __DMGPAL_H__
 #define __DMGPAL_H__
 
+#include "defs.h"
+
 struct palette 
 {
-    int hash[20];
+    un32 hash[20];
     int bg[4];
     int obj0[4];
     int obj1[4];
