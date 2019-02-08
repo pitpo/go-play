@@ -4,7 +4,6 @@
 #include "stdio.h"
 #include "defs.h"
 
-// TODO: save currently used palette in each game's savestate
 #define GB_DEFAULT_PALETTE { 0xd5f3ef, 0x7ab6a3, 0x3b6137, 0x161c04 }
 #if 0
 // Testing/Debug palette
@@ -20,7 +19,7 @@ int dmg_pal[4][4] = {GB_DEFAULT_PALETTE,
 #endif
 
 // keep in mind these are actually BGR values, not RGB
-// TODO: make these palette names actually mean something (these names are quite random at the moment)
+// TODO: make these palette names actually mean something (they are quite random at the moment)
 #define GB_GREEN_PALETTE { 0xffffff, 0x00ff52, 0x0042ff, 0x000000 }
 #define GB_ORANGE_PALETTE { 0xffffff, 0x00ffff, 0x0000ff, 0x000000 }
 #define GB_LIGHT_BROWN_PALETTE { 0xffffff, 0x63adff, 0x003184, 0x000000 }
@@ -271,9 +270,9 @@ const struct palette predefs[] = {
 
 enum pal{BG,WIN,OBJ0,OBJ1};
 
-static int cur_pal = 0;
-static int dedicated_pal = 0;
-int dmgcolor = 1;
+byte dmg_cur_pal = 0;
+byte dmg_dedicated_pal = 0;
+byte dmg_color = 1;
 
 void dmg_pal_set_layer(enum pal layer, const int* pal) 
 {
@@ -299,7 +298,7 @@ un32 calc_name_hash()
     un32 p = 16777213; /* last 24-bit prime number */
     int i;
 
-    for (i = 0; rom.name[i] != 0; i++) 
+    for (i = 0; rom.name[i]; i++) 
     {
         h = (d*h + (un32)rom.name[i])%p;
     }
@@ -311,23 +310,23 @@ void dmg_pal_cycle()
 #if 0
     // leave testing/debug palette intact
 #else
-    cur_pal = (cur_pal+1) % 14;
-    printf("cur palette: %d\n", cur_pal);
+    dmg_cur_pal = (dmg_cur_pal+1) % 14;
+    printf("dmgpal: cur palette: %d\n", dmg_cur_pal);
 
-    if (cur_pal == 13) 
+    if (dmg_cur_pal == 13) 
     {
-        if (dedicated_pal)
+        if (dmg_dedicated_pal)
         {
             dmg_pal_set();
             return;
         }
         else
         {
-            cur_pal = (cur_pal+1) % 14;
+            dmg_cur_pal = (dmg_cur_pal+1) % 14;
         }
     }
 
-    dmg_pal_update(cur_pal);
+    dmg_pal_update(dmg_cur_pal);
 #endif
 }
 
@@ -338,9 +337,9 @@ void dmg_pal_set()
 #else
     int i, j;
     un32 hash = calc_name_hash();
-    printf("running palette scan, looking for %x...", hash);
+    printf("dmgpal: running palette scan, looking for %x...", hash);
 
-    for (i = 0; *((int*)(predefs + i)) != 0; i++) 
+    for (i = 0; *((int*)(predefs + i)); i++) 
     {
         printf("%d..", i);
         for (j = 0; predefs[i].hash[j] != -1; j++) 
@@ -349,12 +348,12 @@ void dmg_pal_set()
             {
                 printf("hash matched\n");
                 dmg_pal_update(i);
-                cur_pal = 13;
-                dedicated_pal = 1;
+                dmg_cur_pal = 13;
+                dmg_dedicated_pal = 1;
                 return;
             }
         }
     }
-    printf("\n");
+    printf("not found\n");
 #endif
 }

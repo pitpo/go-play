@@ -377,9 +377,8 @@ int rom_load()
 	hw.cgb = ((c == 0x80) || (c == 0xc0)) && !forcedmg;
 	hw.gba = (hw.cgb && gbamode);
 
-	if (!hw.cgb && dmgcolor) {
+	if (!hw.cgb && dmg_color)
 		dmg_pal_set();
-	} 
 
 	return 0;
 }

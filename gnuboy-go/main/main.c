@@ -578,6 +578,10 @@ void app_main(void)
     // Load state
     LoadState(rom.name);
 
+    // Update DMG color palette
+    printf("dmgpal: loaded palette %d\n", dmg_cur_pal);
+    if (!hw.cgb && dmg_color && dmg_cur_pal < 13)
+        dmg_pal_update(dmg_cur_pal);
 
     uint startTime;
     uint stopTime;
@@ -656,7 +660,7 @@ void app_main(void)
         }
 
         // DMG color palette cycling
-        if (!hw.cgb && dmgcolor && joystick.values[ODROID_INPUT_START] && !lastJoysticState.values[ODROID_INPUT_LEFT] && joystick.values[ODROID_INPUT_LEFT])
+        if (!hw.cgb && dmg_color && joystick.values[ODROID_INPUT_START] && !lastJoysticState.values[ODROID_INPUT_LEFT] && joystick.values[ODROID_INPUT_LEFT])
         {
             dmg_pal_cycle();
         }

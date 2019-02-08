@@ -12,9 +12,12 @@ struct palette
 };
 
 extern int dmg_pal[][4];
-extern int dmgcolor;
+extern byte dmg_color;
+extern byte dmg_cur_pal;
+extern byte dmg_dedicated_pal;
 
 void dmg_pal_cycle();
 void dmg_pal_set();
+void dmg_pal_update(int palette);
 
 #endif
